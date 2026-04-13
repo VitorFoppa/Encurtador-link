@@ -2,18 +2,69 @@
 <html>
 <head>
     <title>Encurtador de Links</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
-    <h1>Encurtador de Links</h1>
+
+<!-- FORMULÁRIO -->
+<div class="container">
+    <h1>Encurtador</h1>
 
     <form action="/encurtar" method="post">
-        <input type="text" name="url" placeholder="Digite a URL" required>
+        <input type="text" name="url" placeholder="Cole sua URL aqui..." required>
         <button type="submit">Encurtar</button>
     </form>
 
-    <p th:if="${shortUrl}">
-    Link: 
-    <a th:href="${shortUrl}" th:text="${shortUrl}"></a>
-</p>
+    <div class="resultado" th:if="${shortUrl}">
+        <p>Seu link:</p>
+
+        <a id="link" th:href="${shortUrl}" th:text="${shortUrl}"></a>
+
+        <button class="copy-btn" onclick="copiar()">Copiar</button>
+    </div>
+</div>
+
+<!-- HISTÓRICO -->
+<div class="container-historico">
+
+    <h2 class="titulo-historico">Histórico</h2>
+
+    <div class="tabela-container">
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>URL Original</th>
+                    <th>Link Encurtado</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="link : ${links}">
+                    <td th:text="${link.url}"></td>
+
+                    <td>
+                        <a th:href="@{'/' + ${link.codigo}}"
+                           th:text="@{'http://localhost:8080/' + ${link.codigo}}">
+                        </a>
+                    </td>
+
+                 </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function copiar() {
+    const link = document.getElementById("link").innerText;
+    navigator.clipboard.writeText(link);
+    alert("Link copiado!");
+}
+</script>
+
 </body>
 </html>

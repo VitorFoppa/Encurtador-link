@@ -1,7 +1,10 @@
 package com.encurtador.service;
 
+import java.util.List;
 import java.util.Random;
+
 import org.springframework.stereotype.Service;
+
 import com.encurtador.model.LinkModel;
 import com.encurtador.repository.LinkRepository;
 
@@ -38,4 +41,8 @@ public class LinkService {
     public LinkModel buscarPorCodigo(String codigo) {
         return linkRepository.findByCodigo(codigo).orElse(null);
     }
+
+    public List<LinkModel> listarTodos() {
+        return linkRepository.findAll();
+}
 }

@@ -1,10 +1,12 @@
 package com.encurtador.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model; 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.encurtador.model.LinkModel;
 import com.encurtador.service.LinkService;
@@ -19,17 +21,17 @@ public class LinkController {
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("links", linkService.listarTodos());
         return "index";
     }
 
     @PostMapping("/encurtar")
-    public String encurtar(@ModelAttribute LinkModel linkModel, org.springframework.ui.Model model) {
-
+    public String encurtar(@ModelAttribute LinkModel linkModel, RedirectAttributes redirectAttributes) {
         LinkModel salvo = linkService.salvar(linkModel);
-        String urlCompleta = "http://localhost:8080/" + salvo.getCodigo();
-        model.addAttribute("shortUrl", urlCompleta);
-        return "index";
+        String shortUrl = "http://localhost:8080/" + salvo.getCodigo();
+        redirectAttributes.addFlashAttribute("shortUrl", shortUrl);
+        return "redirect:/";
     }
 
     @GetMapping("/{codigo}")

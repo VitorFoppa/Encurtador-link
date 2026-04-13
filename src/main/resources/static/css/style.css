@@ -1,0 +1,174 @@
+/* Container adaptável */
+.container {
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.container-historico {
+    margin-top: 20px;
+    width: 90%;
+    max-width: 900px;
+
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Ajuste geral para telas menores */
+@media (max-width: 480px) {
+
+    .container {
+        padding: 25px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .copy-btn {
+        font-size: 14px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+
+    .container {
+        max-width: 90%;
+    }
+}
+
+/* Título */
+.titulo-historico {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Container com scroll no mobile */
+.tabela-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Tabela */
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Cabeçalho */
+.tabela thead {
+    background: #4facfe;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.tabela th, 
+.tabela td {
+    padding: 12px;
+    text-align: left;
+}
+
+/* Linhas alternadas */
+.tabela tbody tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+/* Hover */
+.tabela tbody tr:hover {
+    background: #eaf4ff;
+}
+
+/* Links */
+.tabela a {
+    color: #4facfe;
+    text-decoration: none;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+.tabela a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 95%;
+    }
+
+    .container-historico {
+        width: 95%;
+    }
+
+    .tabela th, 
+    .tabela td {
+        padding: 6px;
+        font-size: 11px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.tabela td {
+    vertical-align: middle;
+}
+
+.tabela tbody tr {
+    transition: all 0.2s ease;
+}
+
+.tabela td:first-child {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.titulo-historico {
+    font-weight: bold;
+    border-left: 4px solid #4facfe;
+    padding-left: 10px;
+}
+
+@media (max-width: 480px) {
+    .tabela td:first-child {
+        max-width: 120px;
+    }
+}
