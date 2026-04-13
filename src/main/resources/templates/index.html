@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Encurtador de Links</title>
+</head>
+<body>
+    <h1>Encurtador de Links</h1>
+
+    <form action="/encurtar" method="post">
+        <input type="text" name="url" placeholder="Digite a URL" required>
+        <button type="submit">Encurtar</button>
+    </form>
+
+    <p th:if="${shortUrl}">
+    Link: 
+    <a th:href="${shortUrl}" th:text="${shortUrl}"></a>
+</p>
+</body>
+</html>
