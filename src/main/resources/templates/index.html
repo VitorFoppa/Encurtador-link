@@ -1,70 +1,222 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Encurtador de Links</title>
 
     <link rel="stylesheet" href="/css/style.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<!-- FORMULÁRIO -->
-<div class="container">
-    <h1>Encurtador</h1>
+    <!-- FORMULÁRIO -->
+    <div class="container">
 
-    <form action="/encurtar" method="post">
-        <input type="text" name="url" placeholder="Cole sua URL aqui..." required>
-        <button type="submit">Encurtar</button>
-    </form>
+        <h1>Encurtador</h1>
 
-    <div class="resultado" th:if="${shortUrl}">
-        <p>Seu link:</p>
+        <form action="/encurtar" method="post">
 
-        <a id="link" th:href="${shortUrl}" th:text="${shortUrl}"></a>
+            <input
+                type="text"
+                name="url"
+                placeholder="Cole sua URL aqui..."
+                required>
 
-        <button class="copy-btn" onclick="copiar()">Copiar</button>
-    </div>
-</div>
+            <button type="submit">
+                Encurtar
+            </button>
 
-<!-- HISTÓRICO -->
-<div class="container-historico">
+        </form>
 
-    <h2 class="titulo-historico">Histórico</h2>
+        <div class="resultado" th:if="${shortUrl}">
 
-    <div class="tabela-container">
-        <table class="tabela">
-            <thead>
-                <tr>
-                    <th>URL Original</th>
-                    <th>Link Encurtado</th>
-                </tr>
-            </thead>
+            <p>Seu link:</p>
 
-            <tbody>
-                <tr th:each="link : ${links}">
-                    <td th:text="${link.url}"></td>
+            <a
+                id="link"
+                th:href="${shortUrl}"
+                th:text="${shortUrl}">
+            </a>
 
-                    <td>
-                        <a th:href="@{'/' + ${link.codigo}}"
-                           th:text="@{'http://localhost:8080/' + ${link.codigo}}">
-                        </a>
-                    </td>
+            <button class="copy-btn" onclick="copiar()">
+                Copiar
+            </button>
 
-                 </tr>
-            </tbody>
-        </table>
+        </div>
+
     </div>
 
-</div>
+    <!-- DASHBOARD -->
+    <div class="dashboard">
 
-<script>
-function copiar() {
-    const link = document.getElementById("link").innerText;
-    navigator.clipboard.writeText(link);
-    alert("Link copiado!");
-}
-</script>
+        <div class="card">
+
+            <h3>Total Links</h3>
+
+            <p th:text="${totalLinks}"></p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Total Clicks</h3>
+
+            <p th:text="${totalCliques}"></p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Most Accessed</h3>
+
+            <span
+                th:if="${maisAcessado != null}"
+                th:text="${maisAcessado.codigo}">
+            </span>
+
+            <span th:if="${maisAcessado == null}">
+                None
+            </span>
+
+        </div>
+
+        <!-- GRÁFICO -->
+        <div class="grafico-container">
+
+            <canvas id="analyticsChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="container-historico">
+
+        <h2 class="titulo-historico">
+            Histórico
+        </h2>
+
+        <div class="tabela-container">
+
+            <table class="tabela">
+
+                <thead>
+
+                    <tr>
+                        <th>URL Original</th>
+                        <th>Link Encurtado</th>
+                        <th>Clicks</th>
+                        <th>Created At</th>
+                        <th>Last Access</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="link : ${links}">
+
+                        <!-- URL -->
+                        <td th:text="${link.url}"></td>
+
+                        <!-- LINK -->
+                        <td>
+
+                            <a
+                                th:href="@{'/' + ${link.codigo}}"
+                                th:text="@{'http://localhost:8080/' + ${link.codigo}}">
+                            </a>
+
+                        </td>
+
+                        <!-- CLIQUES -->
+                        <td th:text="${link.acessos}"></td>
+
+                        <!-- DATA CRIAÇÃO -->
+                        <td th:text="${#temporals.format(link.criadoEm, 'dd/MM/yyyy HH:mm')}"></td>
+
+                        <!-- ÚLTIMO ACESSO -->
+                        <td th:text="${link.ultimoAcesso != null ?
+                        #temporals.format(link.ultimoAcesso, 'dd/MM/yyyy HH:mm')
+                        : 'Nunca'}"></td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT COPIAR -->
+    <script>
+
+        function copiar() {
+
+            const link = document.getElementById("link").innerText;
+
+            navigator.clipboard.writeText(link);
+
+            alert("Link copiado!");
+        }
+
+    </script>
+
+    <!-- CHART -->
+    <script th:inline="javascript">
+
+        const labels = /*[[${links.![codigo]}]]*/ [];
+
+        const data = /*[[${links.![acessos]}]]*/ [];
+
+        const ctx = document.getElementById('analyticsChart');
+
+        new Chart(ctx, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [{
+
+                    label: 'Clicks',
+
+                    data: data,
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
 
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 package com.encurtador.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,22 +15,46 @@ import com.encurtador.service.LinkService;
 public class LinkController {
 
     private final LinkService linkService;
-    
+
     public LinkController(LinkService linkService) {
         this.linkService = linkService;
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("links", linkService.listarTodos());
+
+        var links = linkService.listarTodos();
+
+        model.addAttribute("totalLinks", links.size());
+
+        int totalCliques = links.stream()
+                .mapToInt(link -> link.getAcessos())
+                .sum();
+
+        model.addAttribute("totalCliques", totalCliques);
+
+        LinkModel maisAcessado = links.stream()
+                .max((a, b) -> Integer.compare(a.getAcessos(), b.getAcessos()))
+                .orElse(null);
+
+        model.addAttribute("maisAcessado", maisAcessado);
+
+        model.addAttribute("links", links);
+
         return "index";
     }
 
     @PostMapping("/encurtar")
-    public String encurtar(@ModelAttribute LinkModel linkModel, RedirectAttributes redirectAttributes) {
+    public String encurtar(
+            @ModelAttribute LinkModel linkModel,
+            RedirectAttributes redirectAttributes) {
+
         LinkModel salvo = linkService.salvar(linkModel);
+
         String shortUrl = "http://localhost:8080/" + salvo.getCodigo();
+
         redirectAttributes.addFlashAttribute("shortUrl", shortUrl);
+
         return "redirect:/";
     }
 
@@ -38,10 +62,14 @@ public class LinkController {
     public String redirecionar(@PathVariable String codigo) {
 
         LinkModel linkBuscado = linkService.buscarPorCodigo(codigo);
-        
+
         if (linkBuscado != null) {
+
+            linkService.registrarAcesso(linkBuscado);
+
             return "redirect:" + linkBuscado.getUrl();
         }
-        return "index";
+
+        return "redirect:/";
     }
 }
